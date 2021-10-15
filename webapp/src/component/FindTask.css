@@ -1,0 +1,40 @@
+.card{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top:2%;
+    margin-bottom:2%;
+}
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+  
+.container {
+padding: 2px 16px;
+}
+
+.colLeft{
+    float: left;
+    padding-left: 2%;
+    padding-right: 2%;
+    width: 30%;
+    color:#058095;
+    font-size: 80%;
+    font-weight:bold;
+    margin-bottom:2%;
+}
+.colRight{
+    float: left;
+    padding-left: 2%;
+    padding-right: 2%;
+    width: 60%;
+    font-size: 16px;
+    margin-bottom:2%;
+}
+.row2:after {
+    display: table;
+    content: "";
+    clear: both;
+   
+}
