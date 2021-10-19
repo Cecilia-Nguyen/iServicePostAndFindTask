@@ -1,126 +1,165 @@
-import React,{useState, useEffect} from 'react';
-import 'semantic-ui-css/semantic.min.css'
+import React from "react";
 import './FindTask.css'
+import { Button} from 'semantic-ui-react'
+class Search extends React.Component {
 
-function Search (props)
- { 
-    
-    const [tasks,setTasks]=useState() 
-    
-    useEffect(()=>{ 
-    var request = new XMLHttpRequest(); 
-   
-   
-    request.onreadystatechange = function() { 
-    if (request.readyState === 4 && request.status === 200) { 
-    const response=JSON.parse(request.response) 
-    setTasks(response) 
-    } 
-    }; 
-    request.open('GET', 'http://localhost:8000/gettask', true); 
-    request.send(); 
-    },[]) 
-    
-    useEffect(()=>{ 
-    console.log(tasks) 
-    },[tasks]);
+	// Constructor
+	constructor(props) {
+		super(props);
 
-    
-
-    return ( 
+		this.state = {
+			tasks: [],
+			DataisLoaded: false,
+            isItemContentVisible: {}
+		};
         
-    <div> 
-
-       
-
-        {tasks && tasks.map(tasks=>
+	}
+    showContent(id) {
         
-        <div className="card" >
-            
-            <div className="container"> 
-            <br/>
-                <div className="row">
-                    <div className="colLeft">
-                    Type
-                    </div>
-                    <div className="colRight">
-                    {tasks.Type}
-                    </div>
-                </div>
-                
-                <div className="row">
-                    <div className="colLeft">
-                    Title
-                    </div>
-                    <div className="colRight">
-                    {tasks.Title}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="colLeft">
-                    Description
-                    </div>
-                    <div className="colRight">
-                    {tasks.Description}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="colLeft">
-                    Suburb
-                    </div>
-                    <div className="colRight">
-                    {tasks.Suburb}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="colLeft">
-                    Date
-                    </div>
-                    <div className="colRight">
-                    {tasks.Date}
-                    </div>
-                </div>
-            
+        this.setState({
+          isItemContentVisible: {     
+            ...this.state.isItemContentVisible,
+            [id]: true
+          }
+        });
+      }
 
-                <div className="row">
-                    <div className="colLeft">
-                    Image
-                    </div>
-                    <div className="colRight">
+      deleteTask(id){
+        
+        fetch("http://localhost:8000/deletetask/"+id)
+		.then((res) => res.json())
+			.then(() => {
+				fetch("http://localhost:8000/gettask/")
+                .then((res) => res.json())
+                .then((json) => {
+                    this.setState({
+                        tasks: json,
+                        DataisLoaded: true
+                    });
+                })
+			})	
+    }
+	componentDidMount() {
+		fetch("http://localhost:8000/gettask/")
+			.then((res) => res.json())
+			.then((json) => {
+				this.setState({
+					tasks: json,
+					DataisLoaded: true
+				});
+			})
+	}
+
+
+
+	render() {
+		const { DataisLoaded, tasks } = this.state;
+
+		if (!DataisLoaded) return <div>
+			<h1> Pleses wait some time.... </h1> </div> ;
+
+		return (
+		<div>
+		     {
+				tasks.map((task,i) => (
+				
+                    <ol className="card" >
+            
+                    <div className="container" key = { task._id.toString()} onClick={() => this.showContent(task._id.toString())}> 
+                    <br/>
+                        <div className="row">
+                            <div className="colLeft">
+                            Type
+                            </div>
+                            <div className="colRight">
+                            { task.Type}
+                            </div>
+                        </div>
+                        
+                        <div className="row">
+                            <div className="colLeft">
+                            Title
+                            </div>
+                            <div className="colRight">
+                            {task.Title}
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="colLeft">
+                            Description
+                            </div>
+                            <div className="colRight">
+                            {task.Description}
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="colLeft">
+                            Suburb
+                            </div>
+                            <div className="colRight">
+                            {task.Suburb}
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="colLeft">
+                            Date
+                            </div>
+                            <div className="colRight">
+                            {task.Date}
+                            </div>
+                        </div>
                     
-                    <img style={ {height:"auto",width:"100%"}} src={tasks.Image} alt=""></img>
+                        {this.state.isItemContentVisible[task._id.toString()]? (
+                        <div>
+                        <div className="row">
+                            <div className="colLeft">
+                            Image
+                            </div>
+                            <div className="colRight">
+                            
+                            <img style={ {height:"auto",width:"100%"}} src={task.Image} alt=""></img>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="colLeft">
+                            Budget Type
+                            </div>
+                            <div className="colRight">
+                            {task.BudgetType}
+                            </div>
+                        </div>
+                        
+                        <div className="row">
+                            <div className="colLeft">
+                            BudgetAmount
+                            </div>
+                            <div className="colRight">
+                            {task.BudgetAmount}
+                            </div>
+                        </div> 
+                        </div>
+                            ) : null}
+                        
+                        
+                        
+                        
+                        <br/>   
                     </div>
-                </div>
-                <div className="row">
-                    <div className="colLeft">
-                    Budget Type
-                    </div>
-                    <div className="colRight">
-                    {tasks.BudgetType}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="colLeft">
-                    BudgetAmount
-                    </div>
-                    <div className="colRight">
-                    {tasks.BudgetAmount}
-                    </div>
-                </div>
-                
-                <br/>
-
-            </div>
-            </div>
-            
-      
-      
-       )} 
-       
-       
-    </div>  
-    ); 
-    
-    
+                    
+                    <Button  color='black' style={{width:'150px',height:'50px',marginLeft:'5%'}}  
+                    onClick={()=>this.deleteTask(task._id.toString())}>Delete Task</Button><br/><br/>
+                    </ol>
+                    
+              
+              
+               ))} 
+               
+               
+            </div>  
+				)}
+		
+	
 }
-export default Search
+
+
+export default Search;

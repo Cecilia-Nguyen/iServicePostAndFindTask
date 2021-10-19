@@ -1,17 +1,33 @@
 const Task = require('../model/Task');
-module.exports.getTask = function (req, res) {
+
+module.exports.getTask = function (req, res){
+	let obj = {};
+	if (req.params.id !== undefined) {
+		obj = { _id: req.params.id };
+	}
 	
-  
-  Task.find() 
-   .then(result=>{ 
-   console.log('result: ',result) 
-   res.send(result); 
-   }) 
-   .catch(err=>{ 
-   console.log(err); 
-  }) 
-  
-};
+
+	Task.find(obj).then(result=>{ 
+    res.send(result);
+	}).catch(err=>{ 
+    console.log(err); 
+ 
+   })
+}
+module.exports.deleteTask = function (req, res){
+	let obj = {};
+	if (req.params.id !== undefined) {
+		obj = { _id: req.params.id };
+	}
+	
+  Task.deleteMany(obj).then(result=>{ 
+    res.send(result);
+	}).catch(err=>{ 
+    console.log(err); 
+ 
+  })
+}
+
 
 module.exports.postTask = function (req, res) {
   const task = new Task({
